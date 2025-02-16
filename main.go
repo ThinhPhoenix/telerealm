@@ -33,7 +33,7 @@ func main() {
 }
 
 func initializeHandlers() *handlers.Handlers {
-	initializers.LoadEnvironment()
+	// initializers.LoadEnvironment()
 
 	repo := initializeRepositories()
 	service := services.NewFileService(repo)
