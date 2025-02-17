@@ -130,10 +130,6 @@ curl -X GET "http://localhost:8080/verify?bot_token=<your_bot_token>&chat_id=<yo
 - Consider implementing rate limiting for your API endpoints
 - Monitor your usage to ensure compliance with Telegram's terms of service
 
-## License
-
-[Insert your chosen license here]
-
 ## Contributing
 
 Contributions are welcome! Please feel free to submit a Pull Request.
