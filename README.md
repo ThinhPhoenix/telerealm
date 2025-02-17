@@ -6,6 +6,8 @@ A lightweight Content Delivery Network (CDN) that leverages the Telegram Bot API
 
 telerealm provides a cost-effective solution for hosting files and serving them via a CDN-like infrastructure using Telegram's robust backend. This project is perfect for those looking for an affordable way to store and retrieve files without managing complex infrastructure.
 
+![image](https://github.com/user-attachments/assets/eb82385e-5eeb-4770-8951-2424841db4f4)
+
 **Author:** Lai Chi Thinh (ThinhPhoenix) - FPT University
 
 ## Features
@@ -42,11 +44,11 @@ telerealm provides a cost-effective solution for hosting files and serving them 
 
 2. **Clone the repository**:
    ```bash
-   git clone https://github.com/ThinhPhoenix/telikou_cdn.git
-   cd telikou_cdn
+   git clone https://github.com/ThinhPhoenix/telerealm.git
+   cd telerealm
    ```
 
-3. **Install dependencies**:
+3. **Installed dependencies**:
    ```bash
    go get github.com/gin-contrib/cors
    go get github.com/gin-gonic/gin
