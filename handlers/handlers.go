@@ -9,9 +9,9 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"main.go/models"
 	"main.go/services"
+	"main.go/utils"
 )
 
 type Handlers struct {
@@ -19,9 +19,7 @@ type Handlers struct {
 }
 
 var (
-	secureURLs          = make(map[string]string)
-	secureURLExtensions = make(map[string]string)
-	mu                  sync.Mutex
+	mu sync.Mutex // Giữ lại nếu bạn có biến dùng chung khác cần mutual exclusion
 )
 
 func NewHandlers(service services.FileService) *Handlers {
@@ -94,8 +92,13 @@ func (h *Handlers) SendFile(c *gin.Context) {
 		scheme = "http"
 	}
 
-	secureID := generateSecureURL(fileURL, fileExt)
-	secureURL := fmt.Sprintf("%s://%s/drive/%s", scheme, c.Request.Host, secureID)
+	encryptedToken, err := utils.EncryptFileInfo(botToken, fileID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create secure URL"})
+		return
+	}
+
+	secureURL := fmt.Sprintf("%s://%s/drive/%s", scheme, c.Request.Host, encryptedToken)
 
 	response := models.Response{
 		Success: true,
@@ -127,13 +130,14 @@ func (h *Handlers) GetFileURL(c *gin.Context) {
 		scheme = "http"
 	}
 
-	fileExt := filepath.Ext(fileURL)
-	if fileExt != "" {
-		fileExt = fileExt[1:] // Remove the leading dot
+	// Sử dụng phương pháp mã hóa mới
+	encryptedToken, err := utils.EncryptFileInfo(botToken, fileID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create secure URL"})
+		return
 	}
 
-	secureID := generateSecureURL(fileURL, fileExt)
-	secureURL := fmt.Sprintf("%s://%s/drive/%s", scheme, c.Request.Host, secureID)
+	secureURL := fmt.Sprintf("%s://%s/drive/%s", scheme, c.Request.Host, encryptedToken)
 
 	response := models.Response{
 		Success: true,
@@ -148,11 +152,18 @@ func (h *Handlers) GetFileURL(c *gin.Context) {
 }
 
 func (h *Handlers) DownloadFile(c *gin.Context) {
-	secureID := c.Param("id")
+	encryptedToken := c.Param("key")
 
-	fileURL, exists := getActualURL(secureID)
-	if !exists {
-		c.JSON(http.StatusNotFound, gin.H{"error": "File not found"})
+	botToken, fileID, err := utils.DecryptFileInfo(encryptedToken)
+	if err != nil {
+		fmt.Printf("Decryption error: %v\n", err) // Add this logging
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid token"})
+		return
+	}
+
+	fileURL, _, err := h.service.GetFileInfo(botToken, fileID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": fmt.Sprintf("Failed to get file info: %v", err)})
 		return
 	}
 
@@ -168,17 +179,25 @@ func (h *Handlers) DownloadFile(c *gin.Context) {
 		contentType = "application/octet-stream"
 	}
 
-	mu.Lock()
-	originalExtension := secureURLExtensions[secureID]
-	mu.Unlock()
-
-	if originalExtension == "" {
-		originalExtension = getExtensionFromContentType(contentType)
+	// Lấy phần mở rộng từ URL gốc
+	fileExt := filepath.Ext(fileURL)
+	if fileExt != "" {
+		fileExt = fileExt[1:] // Bỏ dấu chấm ở đầu
+	} else {
+		// Nếu URL không có phần mở rộng, thử lấy từ content type
+		fileExt = getExtensionFromContentType(contentType)
 	}
 
-	filename := secureID
-	if originalExtension != "" {
-		filename += "." + originalExtension
+	// Tạo tên file ngắn gọn
+	// Lấy 8 ký tự đầu của fileID để đặt tên file
+	shortID := fileID
+	if len(fileID) > 8 {
+		shortID = fileID[:8]
+	}
+
+	filename := fmt.Sprintf("file_%s", shortID)
+	if fileExt != "" {
+		filename += "." + fileExt
 	}
 
 	c.Header("Content-Type", contentType)
@@ -210,8 +229,14 @@ func (h *Handlers) GetFileInfo(c *gin.Context) {
 		fileExt = fileExt[1:] // Remove the leading dot
 	}
 
-	secureID := generateSecureURL(fileURL, fileExt)
-	secureURL := fmt.Sprintf("%s://%s/drive/%s", scheme, c.Request.Host, secureID)
+	// Sử dụng phương pháp mã hóa mới
+	encryptedToken, err := utils.EncryptFileInfo(botToken, fileID)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to create secure URL"})
+		return
+	}
+
+	secureURL := fmt.Sprintf("%s://%s/drive/%s", scheme, c.Request.Host, encryptedToken)
 
 	response := models.Response{
 		Success: true,
@@ -228,23 +253,13 @@ func (h *Handlers) GetFileInfo(c *gin.Context) {
 	c.JSON(http.StatusOK, response)
 }
 
-func generateSecureURL(fileURL, originalExtension string) string {
-	id := uuid.New().String()
-	mu.Lock()
-	defer mu.Unlock()
-	secureURLs[id] = fileURL
-	secureURLExtensions[id] = originalExtension
-	return id
-}
-
-func getActualURL(secureID string) (string, bool) {
-	mu.Lock()
-	defer mu.Unlock()
-	fileURL, exists := secureURLs[secureID]
-	return fileURL, exists
-}
-
 func getExtensionFromContentType(contentType string) string {
+	// Loại bỏ các tham số như charset
+	if idx := strings.Index(contentType, ";"); idx != -1 {
+		contentType = contentType[:idx]
+	}
+	contentType = strings.TrimSpace(contentType)
+
 	switch contentType {
 	case "application/zip":
 		return "zip"
@@ -256,7 +271,40 @@ func getExtensionFromContentType(contentType string) string {
 		return "jpg"
 	case "image/png":
 		return "png"
-	// Add more mappings as needed
+	case "image/gif":
+		return "gif"
+	case "image/webp":
+		return "webp"
+	case "text/plain":
+		return "txt"
+	case "text/html":
+		return "html"
+	case "application/json":
+		return "json"
+	case "application/xml", "text/xml":
+		return "xml"
+	case "application/msword":
+		return "doc"
+	case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+		return "docx"
+	case "application/vnd.ms-excel":
+		return "xls"
+	case "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet":
+		return "xlsx"
+	case "application/vnd.ms-powerpoint":
+		return "ppt"
+	case "application/vnd.openxmlformats-officedocument.presentationml.presentation":
+		return "pptx"
+	case "video/mp4":
+		return "mp4"
+	case "video/webm":
+		return "webm"
+	case "audio/mpeg":
+		return "mp3"
+	case "audio/ogg":
+		return "ogg"
+	case "application/vnd.rar":
+		return "rar"
 	default:
 		return ""
 	}

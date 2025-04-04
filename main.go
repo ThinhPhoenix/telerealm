@@ -22,7 +22,7 @@ func main() {
 	r.GET("/ping", h.Ping)
 	r.POST("/send", h.SendFile)
 	r.GET("/url", h.GetFileURL)
-	r.GET("/drive/:id", h.DownloadFile)
+	r.GET("/drive/:key", h.DownloadFile)
 	r.GET("/info", h.GetFileInfo)
 	r.GET("/verify", h.CheckBotAndChat)
 
