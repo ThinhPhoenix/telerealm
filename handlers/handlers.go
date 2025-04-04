@@ -33,7 +33,7 @@ func (h *Handlers) Ping(c *gin.Context) {
 }
 
 func (h *Handlers) SendFile(c *gin.Context) {
-	botToken := c.PostForm("bot_token")
+	botToken := c.MustGet("bot_token").(string)
 	chatID := c.PostForm("chat_id")
 
 	var fileID string
@@ -116,7 +116,7 @@ func (h *Handlers) SendFile(c *gin.Context) {
 }
 
 func (h *Handlers) GetFileURL(c *gin.Context) {
-	botToken := c.Query("bot_token")
+	botToken := c.MustGet("bot_token").(string)
 	fileID := c.Query("file_id")
 
 	fileURL, _, err := h.service.GetFileInfo(botToken, fileID)
@@ -207,7 +207,7 @@ func (h *Handlers) DownloadFile(c *gin.Context) {
 }
 
 func (h *Handlers) GetFileInfo(c *gin.Context) {
-	botToken := c.Query("bot_token")
+	botToken := c.MustGet("bot_token").(string)
 	fileID := c.Query("file_id")
 
 	fileURL, fileSize, err := h.service.GetFileInfo(botToken, fileID)
@@ -329,7 +329,7 @@ func isURLFile(url string) (bool, string, int64, error) {
 }
 
 func (h *Handlers) CheckBotAndChat(c *gin.Context) {
-	botToken := c.Query("bot_token")
+	botToken := c.MustGet("bot_token").(string)
 	chatID := c.Query("chat_id")
 
 	botInfo, chatInfo, botInChat, botIsAdmin, err := h.service.CheckBotAndChat(botToken, chatID)

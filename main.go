@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"main.go/handlers"
 	"main.go/initializers"
+	"main.go/middleware"
 	"main.go/repositories"
 	"main.go/services"
 )
@@ -19,12 +20,19 @@ func main() {
 
 	h := initializeHandlers()
 
+	// Public endpoints
 	r.GET("/ping", h.Ping)
-	r.POST("/send", h.SendFile)
-	r.GET("/url", h.GetFileURL)
 	r.GET("/drive/:key", h.DownloadFile)
-	r.GET("/info", h.GetFileInfo)
-	r.GET("/verify", h.CheckBotAndChat)
+
+	// Protected endpoints
+	auth := r.Group("/")
+	auth.Use(middleware.AuthRequired())
+	{
+		auth.POST("/send", h.SendFile)
+		auth.GET("/url", h.GetFileURL)
+		auth.GET("/info", h.GetFileInfo)
+		auth.GET("/verify", h.CheckBotAndChat)
+	}
 
 	r.Run(":" + os.Getenv("PORT"))
 }
