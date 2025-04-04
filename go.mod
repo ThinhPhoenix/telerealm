@@ -1,4 +1,4 @@
-module main.go
+module telerealm
 
 go 1.22.3
 

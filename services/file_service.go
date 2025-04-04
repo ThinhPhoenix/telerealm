@@ -3,7 +3,7 @@ package services
 import (
 	"io"
 
-	"main.go/repositories"
+	"telerealm/repositories"
 )
 
 type FileService interface {

@@ -3,13 +3,14 @@ package main
 import (
 	"os"
 
+	"telerealm/handlers"
+	"telerealm/initializers"
+	"telerealm/middleware"
+	"telerealm/repositories"
+	"telerealm/services"
+
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"main.go/handlers"
-	"main.go/initializers"
-	"main.go/middleware"
-	"main.go/repositories"
-	"main.go/services"
 )
 
 func main() {
@@ -34,7 +35,13 @@ func main() {
 		auth.GET("/verify", h.CheckBotAndChat)
 	}
 
-	r.Run(":" + os.Getenv("PORT"))
+	r.Run(":" + func() string {
+		p := os.Getenv("PORT")
+		if p == "" {
+			return "8080"
+		}
+		return p
+	}())
 }
 
 func initializeHandlers() *handlers.Handlers {

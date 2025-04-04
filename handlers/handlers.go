@@ -9,9 +9,9 @@ import (
 	"sync"
 
 	"github.com/gin-gonic/gin"
-	"main.go/models"
-	"main.go/services"
-	"main.go/utils"
+	"telerealm/models"
+	"telerealm/services"
+	"telerealm/utils"
 )
 
 type Handlers struct {
