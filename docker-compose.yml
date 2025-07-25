@@ -4,7 +4,7 @@ services:
     build:
       context: .
       dockerfile: dockerfile
-    container_name: telerealm_app
+    container_name: telerealm
     ports:
       - "6777:6777"
     env_file:

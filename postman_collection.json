@@ -1,0 +1,133 @@
+{
+  "info": {
+    "name": "Telerealm",
+    "description": "Postman collection for telerealm CDN using Telegram Bot API.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.0.0"
+  },
+  "item": [
+    {
+      "name": "Ping",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:6777/ping",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "6777",
+          "path": ["ping"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Send File",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bot_token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            { "key": "chat_id", "value": "{{chat_id}}", "type": "text" },
+            { "key": "document", "type": "file", "src": "" }
+          ]
+        },
+        "url": {
+          "raw": "http://localhost:6777/send",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "6777",
+          "path": ["send"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get File URL",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bot_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:6777/url?file_id={{file_id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "6777",
+          "path": ["url"],
+          "query": [{ "key": "file_id", "value": "{{file_id}}" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Download File",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost:6777/drive/{{key}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "6777",
+          "path": ["drive", "{{key}}"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get File Info",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bot_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:6777/info?file_id={{file_id}}",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "6777",
+          "path": ["info"],
+          "query": [{ "key": "file_id", "value": "{{file_id}}" }]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Check Bot and Chat",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{bot_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "http://localhost:6777/verify",
+          "protocol": "http",
+          "host": ["localhost"],
+          "port": "6777",
+          "path": ["verify"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

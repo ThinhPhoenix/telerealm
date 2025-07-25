@@ -22,6 +22,9 @@ func main() {
 	// Public endpoints
 	r.GET("/ping", h.Ping)
 	r.GET("/drive/:key", h.DownloadFile)
+	r.GET("/", func(c *gin.Context) {
+		c.File("postman_collection.json")
+	})
 
 	// Protected endpoints
 	auth := r.Group("/")
