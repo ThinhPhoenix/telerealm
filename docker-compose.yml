@@ -1,0 +1,11 @@
+version: "3.8"
+services:
+  telerealm:
+    build:
+      context: .
+      dockerfile: dockerfile
+    container_name: telerealm_app
+    ports:
+      - "6777:6777"
+    env_file:
+      - .env

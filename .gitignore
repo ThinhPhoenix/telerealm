@@ -1,0 +1,23 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+# Test binaries
+*_test
+# Output of 'go build'
+*.out
+# Dependency directories (Go modules)
+/vendor/
+# Editor/IDE specific files
+.idea/
+.vscode/
+*.swp
+*~
+# Logs
+*.log
+# Environment variables/configuration files (sensitive data)
+.env
+config.yaml
+# Gin specific
+# (No specific Gin-related entries are typically needed beyond general Go exclusions)

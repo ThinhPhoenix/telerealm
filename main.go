@@ -1,8 +1,6 @@
 package main
 
 import (
-	"os"
-
 	"telerealm/handlers"
 	"telerealm/initializers"
 	"telerealm/middleware"
@@ -35,13 +33,7 @@ func main() {
 		auth.GET("/verify", h.CheckBotAndChat)
 	}
 
-	r.Run(":" + func() string {
-		p := os.Getenv("PORT")
-		if p == "" {
-			return "8080"
-		}
-		return p
-	}())
+	r.Run(":6777")
 }
 
 func initializeHandlers() *handlers.Handlers {
