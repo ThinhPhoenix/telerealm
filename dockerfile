@@ -8,7 +8,7 @@ RUN go build -o server main.go
 FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/server ./server
-COPY .env ./
+
 EXPOSE 6777
 
 CMD ["./server"]
