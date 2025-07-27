@@ -9,6 +9,6 @@ FROM alpine:latest
 WORKDIR /app
 COPY --from=builder /app/server ./server
 
-EXPOSE 6777
+EXPOSE 7777
 
 CMD ["./server"]

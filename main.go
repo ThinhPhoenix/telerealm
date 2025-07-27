@@ -2,7 +2,6 @@ package main
 
 import (
 	"telerealm/handlers"
-	"telerealm/initializers"
 	"telerealm/middleware"
 	"telerealm/repositories"
 	"telerealm/services"
@@ -37,11 +36,11 @@ func main() {
 		auth.GET("/verify", h.CheckBotAndChat)
 	}
 
-	r.Run(":6777")
+	r.Run(":7777")
 }
 
 func initializeHandlers() *handlers.Handlers {
-	initializers.LoadEnvironment()
+	// initializers.LoadEnvironment()
 
 	repo := initializeRepositories()
 	service := services.NewFileService(repo)
