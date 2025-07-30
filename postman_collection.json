@@ -12,10 +12,10 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:6777/ping",
+          "raw": "http://localhost:7777/ping",
           "protocol": "http",
           "host": ["localhost"],
-          "port": "6777",
+          "port": "7777",
           "path": ["ping"]
         }
       },
@@ -40,10 +40,10 @@
           ]
         },
         "url": {
-          "raw": "http://localhost:6777/send",
+          "raw": "http://localhost:7777/send",
           "protocol": "http",
           "host": ["localhost"],
-          "port": "6777",
+          "port": "7777",
           "path": ["send"]
         }
       },
@@ -61,10 +61,10 @@
           }
         ],
         "url": {
-          "raw": "http://localhost:6777/url?file_id={{file_id}}",
+          "raw": "http://localhost:7777/url?file_id={{file_id}}",
           "protocol": "http",
           "host": ["localhost"],
-          "port": "6777",
+          "port": "7777",
           "path": ["url"],
           "query": [{ "key": "file_id", "value": "{{file_id}}" }]
         }
@@ -77,10 +77,10 @@
         "method": "GET",
         "header": [],
         "url": {
-          "raw": "http://localhost:6777/drive/{{key}}",
+          "raw": "http://localhost:7777/drive/{{key}}",
           "protocol": "http",
           "host": ["localhost"],
-          "port": "6777",
+          "port": "7777",
           "path": ["drive", "{{key}}"]
         }
       },
@@ -98,10 +98,10 @@
           }
         ],
         "url": {
-          "raw": "http://localhost:6777/info?file_id={{file_id}}",
+          "raw": "http://localhost:7777/info?file_id={{file_id}}",
           "protocol": "http",
           "host": ["localhost"],
-          "port": "6777",
+          "port": "7777",
           "path": ["info"],
           "query": [{ "key": "file_id", "value": "{{file_id}}" }]
         }
@@ -120,10 +120,10 @@
           }
         ],
         "url": {
-          "raw": "http://localhost:6777/verify",
+          "raw": "http://localhost:7777/verify",
           "protocol": "http",
           "host": ["localhost"],
-          "port": "6777",
+          "port": "7777",
           "path": ["verify"]
         }
       },

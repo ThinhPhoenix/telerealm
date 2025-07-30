@@ -2,6 +2,7 @@ package main
 
 import (
 	"telerealm/handlers"
+	"telerealm/initializers"
 	"telerealm/middleware"
 	"telerealm/repositories"
 	"telerealm/services"
@@ -40,7 +41,7 @@ func main() {
 }
 
 func initializeHandlers() *handlers.Handlers {
-	// initializers.LoadEnvironment()
+	initializers.LoadEnvironment()
 
 	repo := initializeRepositories()
 	service := services.NewFileService(repo)

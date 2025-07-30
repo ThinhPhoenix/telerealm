@@ -40,15 +40,18 @@ telerealm provides a cost-effective solution for hosting files and serving them 
 ### Installation
 
 1. **Create a bot in Telegram**:
+
    - Follow the instructions on the [Telegram Bot Features](https://core.telegram.org/bots/features) page to create a new bot and obtain your API token
 
 2. **Clone the repository**:
+
    ```bash
    git clone https://github.com/ThinhPhoenix/telerealm.git
    cd telerealm
    ```
 
 3. **Installed dependencies**:
+
    ```bash
    go get github.com/gin-contrib/cors
    go get github.com/gin-gonic/gin
@@ -61,63 +64,69 @@ telerealm provides a cost-effective solution for hosting files and serving them 
    go run main.go
    ```
 
-The server will start running on http://localhost:8080 by default.
+The server will start running on http://localhost:7777 by default.
 
 ## Usage
 
 ### Upload a File
 
 To upload a file, send a POST request to the `/send` endpoint with the following form data:
-- `bot_token`: Your Telegram Bot API token
+
 - `chat_id`: The chat ID where you want to upload the file (you can use your own chat ID or a group/channel ID)
 - `document`: The file you want to upload
 
 **Example**:
+
 ```bash
-curl -X POST -F "bot_token=<your_bot_token>" -F "chat_id=<your_chat_id>" -F "document=@/path/to/your/file" http://localhost:8080/send
+curl -X POST -H "Authorization: Bearer <your_bot_token>" -F "chat_id=<your_chat_id>" -F "document=@/path/to/your/file" http://localhost:7777/send
 ```
 
 ### Get File URL
 
 To retrieve the file URL, send a GET request to the `/url` endpoint with the following query parameters:
-- `bot_token`: Your Telegram Bot API token
+
 - `file_id`: The file ID obtained from the upload response
 
 **Example**:
+
 ```bash
-curl -X GET "http://localhost:8080/url?bot_token=<your_bot_token>&file_id=<your_file_id>"
+curl -X GET -H "Authorization: Bearer <your_bot_token>" "http://localhost:7777/url?file_id=<your_file_id>"
 ```
 
 ### Retrieve File
 
 You can download the file by accessing the secure URL generated after uploading:
+
 - `/drive/:id`: Endpoint to download the file associated with `:id` (secure ID)
 
 **Example**:
+
 ```bash
-curl -OJL http://localhost:8080/drive/<secure_id>
+curl -OJL http://localhost:7777/drive/<secure_id>
 ```
 
 ### Get File Information
 
 To get information about a file (including its size and URL), send a GET request to the `/info` endpoint with the following query parameters:
-- `bot_token`: Your Telegram Bot API token
+
 - `file_id`: The file ID obtained from the upload response
 
 **Example**:
+
 ```bash
-curl -X GET "http://localhost:8080/info?bot_token=<your_bot_token>&file_id=<your_file_id>"
+curl -X GET -H "Authorization: Bearer <your_bot_token>" "http://localhost:7777/info?file_id=<your_file_id>"
 ```
 
 ### Verify Bot and Chat
 
 To verify bot and chat information, send a GET request to the `/verify` endpoint with the following query parameters:
-- `bot_token`: Your Telegram Bot API token
+
 - `chat_id`: The chat ID where you want to verify the bot
 
 **Example**:
+
 ```bash
-curl -X GET "http://localhost:8080/verify?bot_token=<your_bot_token>&chat_id=<your_chat_id>"
+curl -X GET -H "Authorization: Bearer <your_bot_token>" "http://localhost:7777/verify?chat_id=<your_chat_id>"
 ```
 
 ## Important Notes
