@@ -6,6 +6,8 @@ services:
       dockerfile: dockerfile
     container_name: telerealm
     ports:
-      - "6777:6777"
+      - "7777:7777"
+    environment:
+      - ENCRYPTION_KEY=${ENCRYPTION_KEY}
     env_file:
       - .env

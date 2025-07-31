@@ -7,6 +7,7 @@ RUN go build -o server main.go
 
 FROM debian:bullseye-slim
 WORKDIR /app
+RUN apt-get update && apt-get install -y ca-certificates && rm -rf /var/lib/apt/lists/*
 COPY --from=builder /app/server ./server
 
 EXPOSE 7777
